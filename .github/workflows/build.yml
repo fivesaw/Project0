@@ -1,0 +1,88 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a release'
+        required: false
+        default: 'true'
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+          cache: 'gradle'
+          
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '4.0'
+          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon --stacktrace
+        
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: legitclient-${{ github.sha }}
+          path: build/libs/*.jar
+          retention-days: 30
+          
+      - name: Get version from build.gradle
+        id: get_version
+        run: |
+          VERSION=$(grep '^version' build.gradle | sed 's/version.*=.*"\(.*\)".*/\1/' | tr -d ' ')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Create Release
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
+          name: Legit Client v${{ steps.get_version.outputs.version }} Build #${{ github.run_number }}
+          body: |
+            ## Legit Client v${{ steps.get_version.outputs.version }}
+            
+            **Build:** #${{ github.run_number }}
+            **Commit:** ${{ github.sha }}
+            
+            ### Changes
+            ${{ github.event.head_commit.message }}
+            
+            ### Installation
+            1. Download the `.jar` file below
+            2. Place it in your Minecraft `mods` folder
+            3. Launch Minecraft 1.8.9 with Forge 11.15.1.2318
+            
+            ### Requirements
+            - Minecraft 1.8.9
+            - Forge 1.8.9-11.15.1.2318
+            - Java 8
+          files: build/libs/legitclient-*.jar
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

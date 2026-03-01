@@ -1,5 +1,7 @@
 package com.legitclient.module;
 
+import com.legitclient.utils.TickOptimizer.TickPriority;
+
 public abstract class Module {
 
     public enum Category {
@@ -8,12 +10,18 @@ public abstract class Module {
 
     private final String name;
     private final Category category;
+    private final TickPriority tickPriority;
     private boolean enabled;
     private int keybind;
 
     public Module(String name, Category category) {
+        this(name, category, TickPriority.NORMAL);
+    }
+
+    public Module(String name, Category category, TickPriority priority) {
         this.name = name;
         this.category = category;
+        this.tickPriority = priority;
         this.enabled = false;
         this.keybind = -1;
     }
@@ -43,6 +51,10 @@ public abstract class Module {
 
     public Category getCategory() {
         return category;
+    }
+
+    public TickPriority getTickPriority() {
+        return tickPriority;
     }
 
     public boolean isEnabled() {

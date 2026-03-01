@@ -1,6 +1,7 @@
 package com.legitclient;
 
 import com.legitclient.module.ModuleManager;
+import com.legitclient.utils.OptimizationManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -23,10 +24,12 @@ public class LegitClient {
     public static LegitClient INSTANCE;
 
     private ModuleManager moduleManager;
+    private OptimizationManager optimizationManager;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         LOGGER.info("{} {} pre-initializing...", MOD_NAME, VERSION);
+        optimizationManager = new OptimizationManager();
     }
 
     @EventHandler
@@ -41,9 +44,21 @@ public class LegitClient {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         LOGGER.info("{} {} post-initialization complete.", MOD_NAME, VERSION);
+        logMemoryInfo();
+    }
+
+    private void logMemoryInfo() {
+        Runtime runtime = Runtime.getRuntime();
+        long maxMB = runtime.maxMemory() / (1024 * 1024);
+        long totalMB = runtime.totalMemory() / (1024 * 1024);
+        LOGGER.info("Memory: {}MB allocated of {}MB max", totalMB, maxMB);
     }
 
     public ModuleManager getModuleManager() {
         return moduleManager;
+    }
+
+    public OptimizationManager getOptimizationManager() {
+        return optimizationManager;
     }
 }
