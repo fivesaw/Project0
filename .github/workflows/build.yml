@@ -42,7 +42,7 @@ jobs:
         run: chmod +x gradlew
         
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon --stacktrace
+        run: bash ./gradlew build --no-daemon --stacktrace
         
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
