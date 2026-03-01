@@ -25,7 +25,7 @@ public class RenderCache {
         this.entityCache = new ConcurrentHashMap<Integer, CachedEntityData>();
         this.genericCache = new ConcurrentHashMap<String, Object>();
         this.lastCacheTime = 0L;
-        this.lastPlayerPos = Vec3.createVectorHelper(0.0D, 0.0D, 0.0D);
+        this.lastPlayerPos = new Vec3(0.0D, 0.0D, 0.0D);
         this.lastPlayerYaw = 0f;
         this.lastPlayerPitch = 0f;
         this.cacheValid = false;
