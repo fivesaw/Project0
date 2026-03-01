@@ -1,0 +1,82 @@
+// ============================================================
+// Legit Client — Forge 1.8.9 Build Script
+// DO NOT MODIFY unless you know what you're doing.
+// Gradle version: 4.0 (see gradle-wrapper.properties)
+// Java version required: JDK 8u202 or EARLIER
+// ============================================================
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+// ── Project Info ──────────────────────────────────────────
+version      = "1.0.0"
+group        = "com.legitclient"
+archivesBaseName = "legitclient"
+
+// ── Random offline username for testing ───────────────────
+// Generates a new random username every runClient launch
+// Format: Fivesaw4-XXXX (4 random digits)
+def randomUsername = "Fivesaw4-" + (new Random().nextInt(9000) + 1000)
+
+// ── Minecraft / Forge Config ──────────────────────────────
+minecraft {
+    version    = "1.8.9-11.15.1.2318-1.8.9"
+    runDir     = "run"
+    mappings   = "stable_20"
+    // ⚠️ "stable_20 was designed for 1.8.8" warning is EXPECTED and harmless
+
+    clientRunArgs += ["--username", randomUsername]
+    clientJvmArgs += [
+        "-Xmx2G",       // 2GB max heap — enough for 1.8, not too greedy
+        "-Xms512M",
+        "-XX:+UseG1GC"  // better GC for lower latency
+    ]
+}
+
+// ── Java Config ───────────────────────────────────────────
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+compileJava.options.encoding = "UTF-8"
+
+// ── Dependencies ──────────────────────────────────────────
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Forge/MC provided at runtime — no extra deps needed for base client
+    // Add libraries here if needed in future phases
+}
+
+// ── Jar manifest ──────────────────────────────────────────
+jar {
+    manifest {
+        attributes(
+            'FMLAT': '',
+            'Main-Class': 'com.legitclient.LegitClient'
+        )
+    }
+}
+
+// ── Print username at launch so you know which account ────
+task printUsername {
+    doLast {
+        println "==================================="
+        println " Launching with username: ${randomUsername}"
+        println "==================================="
+    }
+}
+runClient.dependsOn printUsername
