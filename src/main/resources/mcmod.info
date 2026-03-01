@@ -1,0 +1,15 @@
+[
+    {
+        "modid": "legitclient",
+        "name": "Legit Client",
+        "description": "A Forge 1.8.9 client-side mod for legitimate input automation and rendering enhancements.",
+        "version": "1.0.0",
+        "mcversion": "1.8.9",
+        "url": "https://github.com/",
+        "authorList": ["Fivesaw4"],
+        "credits": "",
+        "logoFile": "",
+        "screenshots": [],
+        "dependencies": []
+    }
+]
