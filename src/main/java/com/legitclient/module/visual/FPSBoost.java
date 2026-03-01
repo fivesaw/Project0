@@ -10,11 +10,10 @@ public class FPSBoost extends Module {
     private static class OriginalSettings {
         boolean vSync;
         boolean fancyGraphics;
-        boolean clouds;
+        int clouds;
         int renderDistanceChunks;
         int particleSetting;
-        boolean mipmapLevels;
-        boolean anisotropicFiltering;
+        int mipmapLevels;
         int fpsLimit;
     }
 
@@ -50,8 +49,7 @@ public class FPSBoost extends Module {
         originalSettings.clouds = settings.clouds;
         originalSettings.renderDistanceChunks = settings.renderDistanceChunks;
         originalSettings.particleSetting = settings.particleSetting;
-        originalSettings.mipmapLevels = settings.mipmapLevels > 0;
-        originalSettings.anisotropicFiltering = settings.anisotropicFiltering;
+        originalSettings.mipmapLevels = settings.mipmapLevels;
         originalSettings.fpsLimit = settings.limitFramerate;
     }
 
@@ -61,10 +59,9 @@ public class FPSBoost extends Module {
 
         settings.enableVsync = false;
         settings.fancyGraphics = false;
-        settings.clouds = false;
+        settings.clouds = 0;
         settings.particleSetting = 2;
         settings.mipmapLevels = 0;
-        settings.anisotropicFiltering = false;
         settings.limitFramerate = 260;
 
         if (settings.renderDistanceChunks > 10) {
@@ -88,8 +85,7 @@ public class FPSBoost extends Module {
         settings.clouds = originalSettings.clouds;
         settings.renderDistanceChunks = originalSettings.renderDistanceChunks;
         settings.particleSetting = originalSettings.particleSetting;
-        settings.mipmapLevels = originalSettings.mipmapLevels ? 4 : 0;
-        settings.anisotropicFiltering = originalSettings.anisotropicFiltering;
+        settings.mipmapLevels = originalSettings.mipmapLevels;
         settings.limitFramerate = originalSettings.fpsLimit;
 
         settings.saveOptions();
